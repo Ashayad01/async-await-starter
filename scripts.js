@@ -23,10 +23,22 @@ function displayUsers(output, id, data){
 
     // split the returned data into four arrays, each will represent a "page" of users with three on each page
     // TO DO: divide the data returned into four arrays
+    for(let i = 0; i < 12; i++){
+        if(i < 3){
+            page1.push(data.results[i]);
+        }else if(i < 6){
+            page2.push(data.results[i]);
+        }else if(i < 9){
+            page3.push(data.results[i]);
+        }else{
+            page4.push(data.results[i]);
+        }
+    }
 
     // displays each user in a section, with semantic markup for their name, email address, and image
     function displayPage(currentPage){
         // TO DO - complete the code to display the JSON data to the page
+        
 
         // iterate through the data for the page's array and display it on the page
         for(let user of currentPage){
@@ -41,8 +53,8 @@ function displayUsers(output, id, data){
             let profilePhoto = document.createElement("img");
 
             // set the image attributes so that it will display the correct image
-            profilePhoto.src = `${"TO DO"}`;
-            profilePhoto.alt = `${"TO DO"} ${"TO DO"}`;
+            profilePhoto.src = `${user.picture.large}`;
+            profilePhoto.alt = `${user.name.first} ${user.name.last}`;
             
             // add the image to the current user section
             userSection.appendChild(profilePhoto);
@@ -51,7 +63,7 @@ function displayUsers(output, id, data){
             let userName = document.createElement("h3");
             
             // add the name to the element
-            userName.textContent = `${"TO DO"} ${"TO DO"}`;
+            userName.textContent = `${user.name.first} ${user.name.last}`;
             
             // add the name to the section after the image
             userSection.appendChild(userName);
@@ -60,8 +72,8 @@ function displayUsers(output, id, data){
             let emailAddress = document.createElement("a");
             
             // set the link text and attributes
-            emailAddress.href = `mailto:${"TO DO"}`;
-            emailAddress.textContent = `${"TO DO"}`;
+            emailAddress.href = `mailto:${user.email}`;
+            emailAddress.textContent = `${user.email}`;
             
             // add the email address to the section
             userSection.appendChild(emailAddress);
@@ -224,14 +236,39 @@ function displayUsers(output, id, data){
     });
 }
 
-// https://randomuser.me/api/?results=12&nat=us,gb
+//https://randomuser.me/api/?results=12&nat=us,gb
 
 // fetch call to the API
 // TO DO - Complete the code to call the API and display the returned data on the page in the correct place
-
-
-// async/await call to the same API
+ // async/await call to the same API
 // TO DO - Complete the code to call the API using an async function
+fetch("https://randomuser.me/api/?results=12&nat=us,gb")
+    .then(response => response.json())
+    .then(data =>{
+        console.log(data);
+        displayUsers("userPage1", "pagination1", data);
+    })
+    .catch(error => {
+        console.error(error.message);
+    });
 
 // call our async function and handle the returned promise 
 // TO DO - Complete the code to handle the data returned from the API and display the returned data on the page in the correct place
+async function getUsers(){
+   
+
+    let response = await fetch("https://randomuser.me/api/?results=12&nat=us,gb");
+
+    if(response.error){
+        throw new Error(response.error);
+    }
+
+    return await response.json();
+}
+
+getUsers()
+    .then(json => {
+        console.log(json);
+        displayUsers("userPage2", "pagination2", json);
+    })
+    .catch(e => console.error(e.message));
